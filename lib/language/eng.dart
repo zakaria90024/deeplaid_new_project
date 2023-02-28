@@ -4,5 +4,9 @@ Map<String, String> eng = {
   "mpo": "MPO",
   "doctor": "Doctor",
   "login": "Login",
-  "user_id": "User ID"
+  "user_id": "User ID",
+  "bangla": "বাংলা",
+  "password": "Password",
+  "web_portal": "WEB PORTAL",
+  "select_branch":"Select Branch"
 };
