@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:deeplaid/language/language.dart';
 import 'package:deeplaid/login/loginDoctor.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Login extends StatefulWidget {
@@ -19,17 +22,43 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    Locale('en', 'US');
     passwordVisible = true;
+    //_loadUsername();
   }
+
+
+
+  Future<int?> greetUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? clickBn = prefs.getInt('pClick');
+    return clickBn;
+    //return 'Hello, $username!';
+  }
+
+  Future<int?> _loadUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? clickBn = prefs.getInt('pClick');
+    return clickBn;
+
+    // if(clickBn == 1){
+    //   print("init$clickBn");
+    //   Locale('bn', 'BD');
+    // }
+    // if(clickBn == 2){
+    //   print("init$clickBn");
+    //   Locale('en', 'US');
+    // }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      color: Colors.blue,
       translations: Languages(),
-      locale: Locale('en', 'US'),
-      fallbackLocale: Locale('en', 'US'),
+      locale: Locale(greetUser() == 1? 'bn' : 'en', greetUser() == 1? 'BD' : 'US'),
+      fallbackLocale: Locale('${greetUser() == 1? 'bn' : 'en'}', '${greetUser() == 1? 'BD' : 'US'}'),
       home: LoginPageBottom(),
     );
   }
@@ -48,6 +77,7 @@ class _LoginPageBottomState extends State<LoginPageBottom> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+
   int _clickCount = 0;
 
   @override
@@ -60,7 +90,7 @@ class _LoginPageBottomState extends State<LoginPageBottom> {
       length: 2,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         // appBar: AppBar(
         //   title: Center(child: Text("Login")),
         //   bottom: const TabBar(
@@ -86,8 +116,8 @@ class _LoginPageBottomState extends State<LoginPageBottom> {
                 width: 8,
               ),
               TabBar(
-                indicatorColor: Colors.blue,
-                labelColor: Colors.black,
+                indicatorColor: Colors.white,
+                labelColor: Colors.white,
                 unselectedLabelColor: Colors.black,
                 tabs: <Widget>[
                   GestureDetector(
@@ -308,24 +338,32 @@ class _LoginPageBottomState extends State<LoginPageBottom> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
+          onPressed: () async {
             setState(() {
               _clickCount++; // increment click count
             });
 
             if (_clickCount == 1) {
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setInt('pClick', _clickCount);
+
               Get.updateLocale(Locale('bn', 'BD'));
             } else if (_clickCount == 2) {
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setInt('pClick', _clickCount);
+
               Get.updateLocale(Locale('en', 'US'));
               _clickCount = 0;
             }
           },
           label: Text(
             'bangla'.tr,
-            style: TextStyle(color: Colors.black, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
           //icon: const Icon(Icons.thumb_up),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.blue,
         ),
       ),
     );
