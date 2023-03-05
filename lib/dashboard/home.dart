@@ -15,6 +15,7 @@ class _HomeState extends State<Home> {
       width: 100,
       child:Container(
         color: Colors.blue,
+        //write here Sizebox, Container , Column
       ) ,
     );
   }
